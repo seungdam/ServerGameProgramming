@@ -41,6 +41,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 
 	// 윈속 2.2로 초기화
 	if (0 != WSAStartup(MAKEWORD(2, 2), &wsa)) return -1;
+	// 클라이언트 소켓 생성
+	sock = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, 0);
+	if (INVALID_SOCKET == sock) return -2;
 
 	// 메세지 루프
 	while (GetMessage(&Message, NULL, 0, 0) > 0) { // 메세지 큐에 있는 메세지들을 확인
@@ -48,6 +51,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		DispatchMessage(&Message); // WndProc으로 해석시킨 메세지를 전달한다.
 	}
 
+	// 소켓 닫기
+	closesocket(sock);
 	// 윈속 사용 중지
 	WSACleanup();
 
