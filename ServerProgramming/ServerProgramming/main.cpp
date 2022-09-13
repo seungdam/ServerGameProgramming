@@ -1,9 +1,11 @@
 #include <winsock2.h>
+#include "resource.h"
 #include "ChessGame.h"
 
 #pragma comment(lib,"ws2_32")
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+BOOL CALLBACK IpDlgProc(HWND, UINT, WPARAM, LPARAM);
 
 HINSTANCE g_hInst;
 LPCTSTR lpszClass = TEXT("HomeWork2");
@@ -12,6 +14,7 @@ CChessGame maingame;
 SOCKET sock;
 WSADATA wsa;
 sockaddr_in serveraddr;
+TCHAR ipaddr[50];
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow) {
 	HWND hWnd;   // 윈도우 핸들
@@ -44,7 +47,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	// 클라이언트 소켓 생성
 	sock = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, 0);
 	if (INVALID_SOCKET == sock) return -2;
-
+	DialogBox(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, (DLGPROC)IpDlgProc);
 	// 메세지 루프
 	while (GetMessage(&Message, NULL, 0, 0) > 0) { // 메세지 큐에 있는 메세지들을 확인
 		TranslateMessage(&Message); // 키보드에 입력된 메세지를 인스턴스가 이해하기 쉬운 형태로 해석
@@ -93,4 +96,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	}
 
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
+}
+
+BOOL CALLBACK IpDlgProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lParam) {
+	switch (iMessage) {
+	case WM_INITDIALOG:
+		return TRUE;
+	case WM_COMMAND:
+		switch (LOWORD(wParam)) {
+		case IDOK:
+		case IDCANCEL:
+			GetDlgItemText(hDlg, IDC_EDIT_IPADDR, ipaddr, 50);
+			EndDialog(hDlg, IDOK);
+			return TRUE;
+		}
+		return TRUE;
+	}
+	return FALSE;
 }
