@@ -1,10 +1,17 @@
+#include <winsock2.h>
 #include "ChessGame.h"
+
+#pragma comment(lib,"ws2_32")
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 HINSTANCE g_hInst;
-LPCTSTR lpszClass = TEXT("HomeWork1");
+LPCTSTR lpszClass = TEXT("HomeWork2");
 CChessGame maingame;
+
+SOCKET sock;
+WSADATA wsa;
+sockaddr_in serveraddr;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow) {
 	HWND hWnd;   // 윈도우 핸들
